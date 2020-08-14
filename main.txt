@@ -1,0 +1,49 @@
+extern crate clap;
+
+use clap::{Arg,App};
+use std::path::Path;
+use std::process;
+use std::fs::File;
+use std::io::{Read};
+use std::fmt;
+
+struct Point {
+    x: f64,
+    y: f64,
+}
+
+impl fmt::Display for Point {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "x: {}, y: {}", self.x, self.y)
+    }
+}
+
+fn main() {
+         
+     let x = String::from("File exist!!");
+     let y = &x;
+
+     let matches = App::new("kt")
+      .version("0.1.0")
+      .author("Youn Jeong")
+      .about("A drop in cat replacement written in Rust")
+      .arg(Arg::with_name("FILE")
+            .help("File to print.")
+            .empty_values(false)
+        )
+      .get_matches();
+
+     if let Some(file) = matches.value_of("FILE") {
+        if Path::new(&file).exists() {
+           println!("{}",y);
+           let mut f = File::open(file).expect("[kt Error] File not found.");
+           let mut data = String::new();
+           f.read_to_string(&mut data).expect("[kt Error] Unable to read the  file.");
+           println!("{}", data);
+        }
+        else {
+            eprintln!("[kt Error] No such file or directory.");
+            process::exit(1);
+        }
+     }
+}
